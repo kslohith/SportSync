@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "sportssync",
+    "slug": "sportssync",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "sportssync"
+}
