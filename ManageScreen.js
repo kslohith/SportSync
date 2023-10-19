@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, TextInput, Button} from 'react-native';
 import Modal from 'react-native-modal';
 import DateTimeModal from './DateTimeModal';
@@ -6,19 +6,34 @@ import axios from 'axios';
 
 
 function ManageScreen() {
+    const [eventData, setEventData] = useState([]);
 
-    const initialBoxes = [
-        { id: 1, isVisible: true },
-        { id: 2, isVisible: true },
-        // Add more boxes as needed
-      ];
+     
+      useEffect(() => {
+        const organizerName = 'lohith';
+        // Fetch data for a specific user (replace 'lohith' with the actual username)
+        axios
+          .get(`https://sportssync-backend.onrender.com/getEventByUser?name=${organizerName}`)
+          .then((response) => {
+            setEventData(response.data.data);
+          })
+          .catch((error) => {
+            console.error('Error fetching event data:', error);
+          });
+      }, []);
 
+
+      const initialBoxes = eventData.map((entry) => ({
+        id: entry.id, // Assuming there is an 'id' field in your eventData
+        isVisible: true,
+      }));
+    
     const [boxes, setBoxes] = useState(initialBoxes);
-
+/*
     const [eventName, setEventName] = useState("");
     const [capacity, setCapacity] = useState("");
     const [location, setLocation] = useState("");
-    const [request, setRequest] = useState(false);
+    const [request, setRequest] = useState(false); */
     const [date, setDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -61,9 +76,7 @@ function ManageScreen() {
         })
         setShowDatePicker(false);
     }
-
-
-      const BoxComponent = ({ box }) => (
+    const BoxComponent = ({ entry }) => (
         <View
           style={{
             width: 370,
@@ -76,33 +89,35 @@ function ManageScreen() {
             justifyContent: 'space-between',
             alignContent: 'center',
             flexDirection: 'row',
-            display: box.isVisible ? 'flex' : 'none',
-
           }}
         >
-        <Text style={{ color: 'black', textAlign: 'left' }}>
-        Hello, I'm inside the box {box.id}!
-      </Text>
-        <Button title="Accept" onPress={() => hideBox(box.id)} />
-        <Button title="Deny" onPress={() => hideBox(box.id)} style={greenButtonStyle}
-    />
-      </View>
+          <Text style={{ color: 'black', textAlign: 'left' }}>
+            Event data: {entry.eventName}
+          </Text>
+          <Button title="Accept" onPress={() => hideBox(entry.id)} />
+          <Button title="Deny" onPress={() => hideBox(entry.id)} style={greenButtonStyle} />
+        </View>
       );
-    //<Text style={{ color: 'black' }}>Hello, I'm inside the box!</Text>
-    //<Button title="Click Me" onPress={() => alert('Button clicked!')} />
-    const NextElement = () => (
+
+      const NextElement = () => (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Text style={{ color: 'black' }}>Next Element</Text>
         </View>
       );
 
+          //<Text style={{ color: 'black' }}>Hello, I'm inside the box!</Text>
+    //<Button title="Click Me" onPress={() => alert('Button clicked!')} />
+
     const optionStyle = [styles.create_option, {opacity:(showDatePicker)?0.3:1}];
     return (
-        <View style={{flex:1, paddingTop:40, paddingLeft:20, paddingRight:20, backgroundColor:(showDatePicker)?'darkslategray':'white'}}>
+    <View style={{flex:1, paddingTop:40, paddingLeft:20, paddingRight:20, backgroundColor:(showDatePicker)?'darkslategray':'white'}}>
     <View style={{ flex: 1, paddingTop: 40, paddingLeft: 20, paddingRight: 20, backgroundColor: 'white' }}>
-      {boxes.map((box) => (
-        <BoxComponent key={box.id} box={box} />
+    <Text style={{ color: 'black' }}>Hello, I'm inside the box!</Text>
+    {eventData.map((entry) => (
+        <BoxComponent key={entry.id} entry={entry} />
       ))}
+      <NextElement />
+    
     </View>
         </View>
         
