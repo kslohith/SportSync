@@ -117,6 +117,8 @@ function ManageScreen() {
         <BoxComponent key={entry.id} entry={entry} />
       ))}
       <NextElement />
+
+      <Button title="Click Me" onPress={() => alert('Button clicked!')} />
     
     </View>
         </View>
