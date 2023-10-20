@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View, Button} from 'react-native';
+import axios from 'axios';
 
 export default function AttendeeBox(props) {
     return (
@@ -18,7 +19,7 @@ export default function AttendeeBox(props) {
                 Name: {props.attendee}
             </Text>
             <Button title="Accept" onPress={() => console.log("Accept")} />
-            <Button title="Deny" onPress={() => console.log("Deny")} />
+            <Button title="Remove" onPress={() => props.onRemove(props.attendee)} />
         </View>
     );
 }
