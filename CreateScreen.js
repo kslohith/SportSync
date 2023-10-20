@@ -5,10 +5,12 @@ import DateTimeModal from './DateTimeModal';
 import axios from 'axios';
 import { Dropdown } from 'react-native-element-dropdown';
 import SearchDropdown from './SearchDropdown';
+import Toast from 'react-native-root-toast';
+import SportDropdown from './SportDropdown';
 
-function CreateScreen() {
+function CreateScreen({navigation}) {
     const [eventName, setEventName] = useState("");
-    const [capacity, setCapacity] = useState(1);
+    const [capacity, setCapacity] = useState("1");
     const [location, setLocation] = useState("");
     const [request, setRequest] = useState(false);
     const [date, setDate] = useState(new Date());
@@ -16,7 +18,7 @@ function CreateScreen() {
     const [skill, setSkill] = useState("Any");
     const [notes, setNotes] = useState("");
     const [disableSave, setDisableSave] = useState(false);
-    
+    const [sport, setSport] = useState("");
     const changeDate = (hr, mins, dd, mm) => {
         setDate((date) => {
             date.setHours(hr);
@@ -30,8 +32,11 @@ function CreateScreen() {
     const userId = "Himanshu";
 
     const createEvent = () => {
-        if (!eventName.replace(/\s/g, '').length || !location.replace(/\s/g, '').length || capacity <= 0) {
-            console.log("Invalid input somewhere");
+        var cap = (/^(?=.*\d)[\d ]+$/.test(capacity)) ? parseInt(capacity) : -1;
+        if (!eventName.replace(/\s/g, '').length || !location.replace(/\s/g, '').length || cap <= 0 || sport == "") {
+            Toast.show("Invalid input", {
+                duration: Toast.durations.SHORT
+            })
             return; 
         }
         setDisableSave(true);
@@ -44,24 +49,26 @@ function CreateScreen() {
                 'organizer': userId,
                 'venue': location,
                 'date': date,
-                'slotsRemaining': (capacity-1),
+                'slotsRemaining': (cap-1),
                 'isPrivate': request,
-                'capacity': capacity,
+                'capacity': cap,
                 'attendees': [userId],
                 'dateOfCreation': new Date(),
                 'eventSkill': skill,
-                'requestedAttendees':[]
+                'requestedAttendees':[],
+                'sport': sport
             }
         }).then((response) => {
             console.log(response);
-            setEventName("");
-            setCapacity(1);
-            setLocation("");
-            setRequest(false);
-            setDate(new Date());
-            setNotes("");
-            setSkill("Any");
-            setDisableSave(false);
+            // setEventName("");
+            // setCapacity(1);
+            // setLocation("");
+            // setRequest(false);
+            // setDate(new Date());
+            // setNotes("");
+            // setSkill("Any");
+            // setDisableSave(false);
+            navigation.goBack();
         }).catch((err) => {
             console.log(err);
             setDisableSave(false);
@@ -73,26 +80,28 @@ function CreateScreen() {
     return (
         <View style={{flex:1, paddingTop:40, paddingLeft:20, paddingRight:20, backgroundColor:(showDatePicker)?'darkslategray':'white'}}>
             <View style={optionStyle}>
-                <Text style={styles.label_text}>Sport:</Text>
+                <Text style={styles.label_text}>Name:</Text>
                 <TextInput onChangeText={t=> setEventName(t)} value={eventName} style={styles.text_input}/>
+            </View>
+
+            <View style={optionStyle}>
+                <Text style={styles.label_text}>Sport:</Text>
+                <SportDropdown sport={sport} setSport={setSport}/>
             </View>
 
             <View style={optionStyle}>
                 <Text style={styles.label_text}>Capacity:</Text>
                 <TextInput 
-                    onChangeText={t => {
-                        if (/^(?=.*\d)[\d ]+$/.test(t)) {
-                            setCapacity(parseInt(t));
-                        }
-                    }} 
-                    value={capacity.toString()} style={[styles.text_input]}/>
+                    onChangeText={t => setCapacity(t)} 
+                    value={capacity.toString()} style={[styles.text_input]}
+                    inputMode='numeric'/>
             </View>
 
             <View style={optionStyle}>
                 <Text style={styles.label_text}>Time:</Text>
                 <View style={{width:'75%', opacity:(showDatePicker)?0.5:1}}>
                     <Button
-                        title={date.getHours().toString()+":"+((date.getMinutes() < 10)?"0":"")+date.getMinutes().toString()}
+                        title={parseDate(date)}
                         onPress={()=>setShowDatePicker(true)}/>
                 </View>
             </View>
@@ -112,7 +121,7 @@ function CreateScreen() {
 
             <View style={optionStyle}>
                 <Text style={styles.label_text}>Notes:</Text>
-                <TextInput multiline defaultValue={"man why does not work please help m"} onChangeText={t=>setNotes(t)} style={styles.text_input}/>
+                <TextInput multiline value={notes} onChangeText={t=>setNotes(t)} style={styles.text_input} maxLength={200}/>
             </View>
 
             <View style={optionStyle}>
@@ -128,11 +137,25 @@ function CreateScreen() {
             </View>
 
             <View style={[{flexDirection:"row"}, {justifyContent:'center', opacity:(showDatePicker)?0.15:1}]}>
-                <Button disabled={disableSave} title="Cancel"/>
+                <Button disabled={disableSave} title="Cancel" onPress={() => navigation.goBack()}/>
             </View>
         </View>
     );
 }
+
+function parseDate(d) {
+    const date = new Date(d);
+    let month = date.getMonth();
+    let day = date.getDate();
+    let hour = date.getHours();
+    let mins = date.getMinutes();
+    if (month < 10) month = "0" + month;
+    if (day < 10) day = "0" + day;
+    //if (hour < 10) hour = "0" + hour;
+    if (mins < 10) mins = "0" + mins; 
+    return month + "/" + day + ", " + hour + ":" + mins;
+}
+
 
 const styles = StyleSheet.create({
     text_input: {

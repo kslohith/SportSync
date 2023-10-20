@@ -55,7 +55,8 @@ export default function DateTimeModal(props) {
     const inputProps = {
         style:styles.text_input,
         maxLength:2,
-        textAlign:'center'
+        textAlign:'center',
+        inputMode:'numeric'
     };
     
     return (

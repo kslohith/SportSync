@@ -7,6 +7,7 @@ import CreateScreen from './CreateScreen';
 import UserDetails from './UserDetails';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import ManageScreen from './ManageScreen';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
         <Stack.Navigator initialRouteName='Home'>
           <Stack.Screen name="Home" component={UserDetails}/>
           <Stack.Screen name="CreateEvent" component={CreateScreen} />
+          <Stack.Screen name="ManageEvent" component={ManageScreen}/>
         </Stack.Navigator>
       </RootSiblingParent>
     </NavigationContainer>
