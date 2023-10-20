@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
 import { skillLevels } from './DropdownData';
-export function SearchDropdown(props) {
+
+export default function SearchDropdown(props) {
     const [focused, setFocused] = useState(false);
 
     //console.log(props.skill);
@@ -18,7 +19,7 @@ export function SearchDropdown(props) {
                 setFocused(false);
                 props.setSkill(item.value);
             }}
-
+            
         />
     );
 }

@@ -4,12 +4,22 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { RootSiblingParent } from 'react-native-root-siblings';
 import CreateScreen from './CreateScreen';
+import UserDetails from './UserDetails';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+const Stack = createNativeStackNavigator();
 export default function App() {
   return (
-    <RootSiblingParent>
-      <CreateScreen/>
-    </RootSiblingParent>
+    <NavigationContainer>
+      <RootSiblingParent>
+        {/* <CreateScreen/> */}
+        <Stack.Navigator initialRouteName='Home'>
+          <Stack.Screen name="Home" component={UserDetails}/>
+          <Stack.Screen name="CreateEvent" component={CreateScreen} />
+        </Stack.Navigator>
+      </RootSiblingParent>
+    </NavigationContainer>
   );
 }
 

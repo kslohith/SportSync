@@ -4,7 +4,7 @@ import Modal from 'react-native-modal';
 import DateTimeModal from './DateTimeModal';
 import axios from 'axios';
 import { Dropdown } from 'react-native-element-dropdown';
-import { SearchDropdown } from './SearchDropdown';
+import SearchDropdown from './SearchDropdown';
 
 function CreateScreen() {
     const [eventName, setEventName] = useState("");
@@ -47,7 +47,10 @@ function CreateScreen() {
                 'slotsRemaining': (capacity-1),
                 'isPrivate': request,
                 'capacity': capacity,
-                'attendees': [userId]
+                'attendees': [userId],
+                'dateOfCreation': new Date(),
+                'eventSkill': skill,
+                'requestedAttendees':[]
             }
         }).then((response) => {
             console.log(response);
